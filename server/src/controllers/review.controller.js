@@ -1,81 +1,51 @@
-import responseHandler from "../handlers/response.handler";
-import tmdbApi from "../tmdb/tmdb.api";
-import userModel from "../models/user.model";
-import favoriteModel from "../models/favorite.model";
-import reviewModel from "../models/review.model";
-import tokenMiddleware from "../middlewares/token.middleware";
+import responseHandler from "../handlers/response.handler.js";
+import reviewModel from "../models/review.model.js";
 
-const getList = async (req, res) => {
+const create = async (req, res) => {
   try {
-    const { page } = req.query;
-    const { mediaType, mediaCategory } = req.params;
-    const response = await tmdbApi.mediaList({
-      mediaType,
-      mediaCategory,
-      page,
+    const { movieId } = req.params;
+    const review = new reviewModel({
+      user: req.user.id,
+      movieId,
+      ...req.body,
     });
-    return responseHandler.ok(res, response);
-  } catch {
-    responseHandler.error(res);
-  }
-};
-
-const getGenres = async (req, res) => {
-  try {
-    const { mediaType } = req.params;
-    const response = await tmdbApi.mediaGenres({ mediaType });
-    return responseHandler.ok(res, response);
-  } catch {
-    responseHandler.error(res);
-  }
-};
-
-const search = async (req, res) => {
-  try {
-    const { mediaType } = req.params;
-    const { query, page } = req.query;
-    const response = await tmdbApi.mediaSearch({
-      query,
-      page,
-      mediaType: mediaType === "people" ? "person" : mediaType,
+    await review.save();
+    responseHandler.created(res, {
+      ...review._doc,
+      id: review.id,
+      user: req.user,
     });
-    responseHandler.ok(res, response);
   } catch {
     responseHandler.error(res);
   }
 };
 
-const getDetail = async (req, res) => {
+const remove = async (req, res) => {
   try {
-    const { mediaType, mediaId } = req.params;
-    const params = { mediaType, mediaId };
-    const media = await tmdbApi.mediaDetail(params);
-    media.credits = await tmdbApi.mediaCredits(params);
-    const videos = await tmdbApi.mediaVideos(params);
-    media.videos = videos;
-    const recommend = await tmdbApi.mediaRecommend(params);
-    media.recommend = recommend.results;
-    media.images = await tmdbApi.mediaImages(params);
-    const tokenDecoded = tokenMiddleware.tokenDecode(req);
-    if (tokenDecoded) {
-      const user = await userModel.findById(tokenDecoded.data);
-      if (user) {
-        const isFavorite = await favoriteModel.findOne({
-          user: user.id,
-          mediaId,
-        });
-        media.isFavorite = isFavorite !== null;
-      }
-    }
-    media.reviews = await reviewModel
-      .find({ mediaId })
-      .populate("user")
+    const { reviewId } = req.params;
+    const review = await reviewModel.findOne({
+      _id: reviewId,
+      user: req.user.id,
+    });
+    if (!review) return responseHandler.notfound(res);
+    await review.remove();
+    responseHandler.ok(res);
+  } catch {
+    responseHandler.error(res);
+  }
+};
+
+const getReviewsOfUser = async (req, res) => {
+  try {
+    const reviews = await reviewModel
+      .find({
+        user: req.user.id,
+      })
       .sort("-createdAt");
-    responseHandler.ok(res, media);
-  } catch (error) {
-    console.log(error);
+    responseHandler.ok(res, reviews);
+  } catch {
     responseHandler.error(res);
   }
 };
 
-export default { getList, getGenres, search, getDetail };
+export default { create, remove, getReviewsOfUser };
