@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthModalOpen } from "../../app/features/authModelSlice";
+import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 
 const ProtectedPage = ({ children }) => {
   const dispatch = useDispatch();
