@@ -127,8 +127,7 @@ const Topbar = () => {
                 </Button>
               )}
             </Stack>
-            {/* {user && <UserMenu />} */}
-            {<UserMenu />}
+            {user && <UserMenu />}
             {/* user menu */}
           </Toolbar>
         </AppBar>

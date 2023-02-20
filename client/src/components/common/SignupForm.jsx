@@ -8,6 +8,7 @@ import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import { Box, Stack } from "@mui/system";
 import { Alert, Button, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import userApi from "../../api/modules/user.api";
 
 const SignupForm = ({ switchAuthState }) => {
   const dispatch = useDispatch();
@@ -36,12 +37,13 @@ const SignupForm = ({ switchAuthState }) => {
         "confirmPassword not match"
       ),
     }),
-    onsubmit: async (values) => {
+    onSubmit: async (values) => {
       setErrorMessage(undefined);
       setIsLoginRequest(true);
       console.log("done");
-      // const { response, error } = await userApi.signup(values);
-      const { response, error } = {};
+      const { response, err } = await userApi.signup(values);
+      console.log(response);
+
       setIsLoginRequest(false);
       if (response) {
         signupForm.resetForm();
@@ -49,7 +51,7 @@ const SignupForm = ({ switchAuthState }) => {
         dispatch(setAuthModalOpen(false));
         toast.success("Sign in success");
       }
-      if (error) setErrorMessage(error.message);
+      if (err) setErrorMessage(err.message);
     },
   });
 

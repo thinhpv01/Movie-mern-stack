@@ -8,18 +8,18 @@ import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import { Box, Stack } from "@mui/system";
 import { Alert, Button, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import userApi from "../../api/modules/user.api";
 
 const SigninForm = ({ switchAuthState }) => {
   const dispatch = useDispatch();
   const [isLoginRequest, setIsLoginRequest] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
-
   const signinForm = useFormik({
     initialValues: {
       username: "",
       password: "",
     },
-    validateYupSchema: Yup.object({
+    validationSchema: Yup.object({
       username: Yup.string()
         .min(8, "username mininum 8 characters")
         .required("username is required"),
@@ -27,12 +27,12 @@ const SigninForm = ({ switchAuthState }) => {
         .min(8, "password mininum 8 characters")
         .required("password is required"),
     }),
-    onsubmit: async (values) => {
+    onSubmit: async (values) => {
       setErrorMessage(undefined);
       setIsLoginRequest(true);
       console.log("done");
-      // const { response, error } = await userApi.signin(values);
-      const { response, error } = {};
+      const { response, err } = await userApi.signin(values);
+      console.log(response);
       setIsLoginRequest(false);
       if (response) {
         signinForm.resetForm();
@@ -40,7 +40,7 @@ const SigninForm = ({ switchAuthState }) => {
         dispatch(setAuthModalOpen(false));
         toast.success("Sign in success");
       }
-      if (error) setErrorMessage(error.message);
+      if (err) setErrorMessage(err.message);
     },
   });
 

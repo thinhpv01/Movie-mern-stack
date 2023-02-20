@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
-import setUser from "../../redux/features/userSlice";
+import { setUser } from "../../redux/features/userSlice";
 
 const UserMenu = () => {
   const { user } = useSelector((state) => state.user);
