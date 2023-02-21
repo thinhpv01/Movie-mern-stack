@@ -128,7 +128,6 @@ const Topbar = () => {
               )}
             </Stack>
             {user && <UserMenu />}
-            {/* user menu */}
           </Toolbar>
         </AppBar>
       </ScrollAppBar>

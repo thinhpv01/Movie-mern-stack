@@ -15,7 +15,6 @@ import { setListFavorites, setUser } from "../../redux/features/userSlice";
 const MainLayout = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  console.log(user);
   useEffect(() => {
     const authUser = async () => {
       const { response, err } = await userApi.getInfo();
