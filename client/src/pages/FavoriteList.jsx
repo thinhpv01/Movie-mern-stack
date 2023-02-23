@@ -7,10 +7,9 @@ import MediaItem from "../components/common/MediaItem";
 import { removeFavorite } from "../redux/features/userSlice";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
-import { Box } from "@mui/system";
 import uiConfigs from "../configs/ui.configs";
-import { Grid } from "swiper";
-import { Button } from "@mui/material";
+import {} from "swiper";
+import { Button, Grid, Box } from "@mui/material";
 import Container from "../components/common/Container";
 
 const FavoriteItem = ({ media, onRemoved }) => {
