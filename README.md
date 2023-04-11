@@ -2,7 +2,7 @@
 
    MERN stack Movie project
     
-#Demo
+# Demo
 
 [movie-project-vanthinh2001x.vercel.app](https://movie-project-vanthinh2001x.vercel.app/)<br>
 
